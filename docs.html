@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xeo Documentation</title>
+    <title>Xeo Documentation — Zero-Cost Rust Web Framework</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -305,13 +305,13 @@
         <main class="main">
             <header class="page-header">
                 <h1 class="page-title">Documentation</h1>
-                <p class="page-description">Everything you need to build fast, modern web applications with Xeo.</p>
+                <p class="page-description">Everything you need to build blazingly fast web servers with Xeo and Rust.</p>
             </header>
 
             <!-- Installation -->
             <section id="installation" class="section">
                 <h2 class="section-title">Installation</h2>
-                <p>Xeo can be installed via npm, yarn, or pnpm. We recommend using the CLI for the fastest setup experience.</p>
+                <p>Add Xeo to your project via Cargo. No external dependencies required.</p>
                 
                 <div class="code-block">
                     <div class="code-header">
@@ -323,30 +323,28 @@
                         <span class="code-filename">terminal</span>
                     </div>
                     <div class="code-content">
-<pre><span class="comment"># Install globally</span>
-npm install -g xeo
+<pre><span class="comment"># Add to existing project</span>
+cargo add xeo
 
-<span class="comment"># Create a new project</span>
-xeo create my-app
-
-<span class="comment"># Navigate and start</span>
-<span class="keyword">cd</span> my-app
-xeo dev</pre>
+<span class="comment"># Or create a new project</span>
+cargo new my-server
+<span class="keyword">cd</span> my-server
+cargo add xeo</pre>
                     </div>
                 </div>
 
-                <p>This will scaffold a new Xeo project with sensible defaults: TypeScript, file-based routing, and zero configuration required.</p>
+                <p>Xeo compiles to a single native binary with zero runtime dependencies. No garbage collector, no virtual machine.</p>
 
                 <div class="callout">
                     <div class="callout-title">Note</div>
-                    <p>Xeo requires Node.js 18.0 or later. Run <code>node -v</code> to check your version.</p>
+                    <p>Xeo requires Rust 1.75 or later. Run <code>rustc --version</code> to check your version.</p>
                 </div>
             </section>
 
             <!-- Quick Start -->
             <section id="quickstart" class="section">
                 <h2 class="section-title">Quick Start</h2>
-                <p>After installation, your project structure will look like this:</p>
+                <p>Create a minimal server in just a few lines of Rust:</p>
 
                 <div class="code-block">
                     <div class="code-header">
@@ -355,26 +353,30 @@ xeo dev</pre>
                             <span class="code-dot"></span>
                             <span class="code-dot"></span>
                         </div>
-                        <span class="code-filename">project structure</span>
+                        <span class="code-filename">src/main.rs</span>
                     </div>
                     <div class="code-content">
-<pre>my-app/
-├── routes/
-│   ├── index.xeo
-│   └── about.xeo
-├── static/
-├── xeo.config.js
-└── package.json</pre>
+<pre><span class="keyword">use</span> xeo::prelude::*;
+
+<span class="variable">#[xeo::main]</span>
+<span class="keyword">async fn</span> <span class="function">main</span>() {
+    Xeo::new()
+        .route(<span class="string">"/"</span>, get(|| <span class="keyword">async</span> { <span class="string">"Hello, World!"</span> }))
+        .bind(<span class="string">"127.0.0.1:3000"</span>)
+        .<span class="keyword">await</span>
+        .run()
+        .<span class="keyword">await</span>;
+}</pre>
                     </div>
                 </div>
 
-                <p>The <code>routes/</code> directory is where all your pages live. Each <code>.xeo</code> file automatically becomes a route.</p>
+                <p>Run with <code>cargo run</code> and visit <code>http://localhost:3000</code> in your browser.</p>
             </section>
 
             <!-- Routing -->
             <section id="routing" class="section">
                 <h2 class="section-title">Routing</h2>
-                <p>Xeo uses file-based routing. Create a file in <code>routes/</code> and it becomes a URL. No configuration needed.</p>
+                <p>Xeo provides a type-safe router with compile-time route validation. Define routes using method extractors.</p>
 
                 <div class="code-block">
                     <div class="code-header">
@@ -383,32 +385,45 @@ xeo dev</pre>
                             <span class="code-dot"></span>
                             <span class="code-dot"></span>
                         </div>
-                        <span class="code-filename">routes/blog/[slug].xeo</span>
+                        <span class="code-filename">src/main.rs</span>
                     </div>
                     <div class="code-content">
-<pre><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="function">BlogPost</span>({ <span class="variable">params</span> }) {
-  <span class="keyword">return</span> (
-    <span class="operator">&lt;</span>article<span class="operator">&gt;</span>
-      <span class="operator">&lt;</span>h1<span class="operator">&gt;</span>Post: {<span class="variable">params</span>.slug}<span class="operator">&lt;</span>/h1<span class="operator">&gt;</span>
-    <span class="operator">&lt;</span>/article<span class="operator">&gt;</span>
-  );
+<pre><span class="keyword">use</span> xeo::prelude::*;
+
+<span class="keyword">async fn</span> <span class="function">get_user</span>(Path(id): Path&lt;u64&gt;) -&gt; String {
+    format!(<span class="string">"User: {}"</span>, id)
+}
+
+<span class="keyword">async fn</span> <span class="function">create_user</span>(Json(body): Json&lt;CreateUser&gt;) -&gt; StatusCode {
+    <span class="comment">// Handle user creation</span>
+    StatusCode::CREATED
+}
+
+<span class="variable">#[xeo::main]</span>
+<span class="keyword">async fn</span> <span class="function">main</span>() {
+    Xeo::new()
+        .route(<span class="string">"/users/:id"</span>, get(get_user))
+        .route(<span class="string">"/users"</span>, post(create_user))
+        .bind(<span class="string">"0.0.0.0:8080"</span>).<span class="keyword">await</span>
+        .run().<span class="keyword">await</span>;
 }</pre>
                     </div>
                 </div>
 
-                <p>Dynamic segments are defined with brackets. The example above matches <code>/blog/hello-world</code>, <code>/blog/my-post</code>, etc.</p>
+                <p>Route parameters are extracted using the <code>Path</code> extractor. Type mismatches are caught at compile time.</p>
 
                 <ul>
-                    <li><code>routes/index.xeo</code> → <code>/</code></li>
-                    <li><code>routes/about.xeo</code> → <code>/about</code></li>
-                    <li><code>routes/blog/[slug].xeo</code> → <code>/blog/:slug</code></li>
+                    <li><code>get(handler)</code> — GET requests</li>
+                    <li><code>post(handler)</code> — POST requests</li>
+                    <li><code>put(handler)</code> — PUT requests</li>
+                    <li><code>delete(handler)</code> — DELETE requests</li>
                 </ul>
             </section>
 
-            <!-- Components -->
+            <!-- Extractors -->
             <section id="components" class="section">
-                <h2 class="section-title">Components</h2>
-                <p>Xeo components are simple functions that return markup. They support props, state, and lifecycle hooks out of the box.</p>
+                <h2 class="section-title">Extractors</h2>
+                <p>Extractors parse incoming requests into strongly-typed Rust values. They work as handler function arguments.</p>
 
                 <div class="code-block">
                     <div class="code-header">
@@ -417,18 +432,26 @@ xeo dev</pre>
                             <span class="code-dot"></span>
                             <span class="code-dot"></span>
                         </div>
-                        <span class="code-filename">components/Button.xeo</span>
+                        <span class="code-filename">src/handlers.rs</span>
                     </div>
                     <div class="code-content">
-<pre><span class="keyword">export</span> <span class="keyword">function</span> <span class="function">Button</span>({ <span class="variable">children</span>, <span class="variable">onClick</span> }) {
-  <span class="keyword">return</span> (
-    <span class="operator">&lt;</span>button 
-      <span class="variable">class</span>=<span class="string">"btn"</span>
-      <span class="variable">on:click</span>={<span class="variable">onClick</span>}
-    <span class="operator">&gt;</span>
-      {<span class="variable">children</span>}
-    <span class="operator">&lt;</span>/button<span class="operator">&gt;</span>
-  );
+<pre><span class="keyword">use</span> xeo::prelude::*;
+
+<span class="variable">#[derive(Deserialize)]</span>
+<span class="keyword">struct</span> <span class="function">QueryParams</span> {
+    page: Option&lt;u32&gt;,
+    limit: Option&lt;u32&gt;,
+}
+
+<span class="keyword">async fn</span> <span class="function">list_items</span>(
+    Query(params): Query&lt;QueryParams&gt;,
+    State(db): State&lt;Database&gt;,
+) -&gt; Json&lt;Vec&lt;Item&gt;&gt; {
+    <span class="keyword">let</span> items = db.fetch_items(
+        params.page.unwrap_or(<span class="string">1</span>),
+        params.limit.unwrap_or(<span class="string">20</span>),
+    ).<span class="keyword">await</span>;
+    Json(items)
 }</pre>
                     </div>
                 </div>
@@ -436,8 +459,8 @@ xeo dev</pre>
 
             <!-- State -->
             <section id="state" class="section">
-                <h2 class="section-title">State</h2>
-                <p>Manage reactive state with the <code>$state</code> primitive. Changes automatically trigger re-renders.</p>
+                <h2 class="section-title">State Management</h2>
+                <p>Share application state across handlers using the <code>State</code> extractor. State is thread-safe by default.</p>
 
                 <div class="code-block">
                     <div class="code-header">
@@ -446,20 +469,29 @@ xeo dev</pre>
                             <span class="code-dot"></span>
                             <span class="code-dot"></span>
                         </div>
-                        <span class="code-filename">routes/counter.xeo</span>
+                        <span class="code-filename">src/main.rs</span>
                     </div>
                     <div class="code-content">
-<pre><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="function">Counter</span>() {
-  <span class="keyword">let</span> <span class="variable">count</span> = <span class="function">$state</span>(<span class="string">0</span>);
+<pre><span class="keyword">use</span> xeo::prelude::*;
+<span class="keyword">use</span> std::sync::Arc;
 
-  <span class="keyword">return</span> (
-    <span class="operator">&lt;</span>div<span class="operator">&gt;</span>
-      <span class="operator">&lt;</span>p<span class="operator">&gt;</span>Count: {<span class="variable">count</span>}<span class="operator">&lt;</span>/p<span class="operator">&gt;</span>
-      <span class="operator">&lt;</span>button <span class="variable">on:click</span>={() <span class="operator">=&gt;</span> <span class="variable">count</span>++}<span class="operator">&gt;</span>
-        Increment
-      <span class="operator">&lt;</span>/button<span class="operator">&gt;</span>
-    <span class="operator">&lt;</span>/div<span class="operator">&gt;</span>
-  );
+<span class="keyword">struct</span> <span class="function">AppState</span> {
+    db: Database,
+    cache: Cache,
+}
+
+<span class="variable">#[xeo::main]</span>
+<span class="keyword">async fn</span> <span class="function">main</span>() {
+    <span class="keyword">let</span> state = Arc::new(AppState {
+        db: Database::connect(<span class="string">"postgres://..."</span>).<span class="keyword">await</span>,
+        cache: Cache::new(),
+    });
+
+    Xeo::new()
+        .state(state)
+        .route(<span class="string">"/"</span>, get(handler))
+        .bind(<span class="string">"0.0.0.0:8080"</span>).<span class="keyword">await</span>
+        .run().<span class="keyword">await</span>;
 }</pre>
                     </div>
                 </div>
@@ -468,7 +500,7 @@ xeo dev</pre>
             <!-- Deployment -->
             <section id="deployment" class="section">
                 <h2 class="section-title">Deployment</h2>
-                <p>Xeo builds to static files by default, deployable anywhere. For dynamic features, deploy to any Node.js environment.</p>
+                <p>Xeo compiles to a single static binary. Deploy anywhere that runs executables — no runtime required.</p>
 
                 <div class="code-block">
                     <div class="code-header">
@@ -480,22 +512,23 @@ xeo dev</pre>
                         <span class="code-filename">terminal</span>
                     </div>
                     <div class="code-content">
-<pre><span class="comment"># Build for production</span>
-xeo build
+<pre><span class="comment"># Build optimized release binary</span>
+cargo build --release
 
-<span class="comment"># Preview the build locally</span>
-xeo preview
+<span class="comment"># Binary is at target/release/my-server</span>
+<span class="comment"># Copy and run anywhere</span>
+./target/release/my-server
 
-<span class="comment"># Deploy to Vercel</span>
-vercel deploy</pre>
+<span class="comment"># Or build for specific target</span>
+cargo build --release --target x86_64-unknown-linux-musl</pre>
                     </div>
                 </div>
 
-                <p>The build output is optimized with automatic code splitting, tree shaking, and asset compression. Average bundle size: under 10KB.</p>
+                <p>Release binaries are typically 2-4MB and start in under 10ms. Perfect for containers and serverless.</p>
 
                 <div class="callout">
                     <div class="callout-title">Tip</div>
-                    <p>Use <code>xeo build --analyze</code> to visualize your bundle and identify optimization opportunities.</p>
+                    <p>Use <code>cargo build --release</code> for production. Debug builds are significantly slower.</p>
                 </div>
             </section>
         </main>
