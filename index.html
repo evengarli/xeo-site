@@ -500,7 +500,6 @@
 </head>
 <body>
 
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="nav-left">
       <a href="xeo.html" class="logo">Xeo</a>
@@ -516,11 +515,10 @@
     </div>
   </nav>
 
-  <!-- Hero -->
   <section class="hero">
     <div class="badge">
       <span class="badge-dot"></span>
-      v0.1.0 — Now in Public Beta
+      v0.1.3 — Now in Public Beta
     </div>
     <h1 class="hero-title">Zero-cost web<br>framework for <span>Rust</span></h1>
     <p class="hero-subtitle">Build blazingly fast web servers with zero dependencies and zero runtime overhead. Pure Rust. Pure performance.</p>
@@ -551,30 +549,30 @@
         <span class="code-filename">main.rs</span>
       </div>
       <div class="code-body">
-<pre><span class="kw">use</span> xeo::prelude::*;
+<pre><span class="kw">use</span> xeo::Xeo;
 
-<span class="mac">#[xeo::main]</span>
-<span class="kw">async fn</span> <span class="fn">main</span>() {
-    Xeo::new()
-        .route(<span class="str">"/"</span>, get(|| <span class="kw">async</span> { <span class="str">"Hello, Rust!"</span> }))
-        .route(<span class="str">"/api/users"</span>, get(users_handler))
-        .bind(<span class="str">"0.0.0.0:8080"</span>)
-        .<span class="kw">await</span>
-        .run()
-        .<span class="kw">await</span>;
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="cm">// Initialize</span>
+    <span class="kw">let</span> <span class="kw">mut</span> app = Xeo::<span class="fn">new</span>(8080, <span class="str">"0.0.0.0"</span>.to_string());
+
+    <span class="cm">// Register Routes</span>
+    app.<span class="fn">route</span>(<span class="str">"/"</span>.to_string(), <span class="str">"index.html"</span>.to_string());
+    app.<span class="fn">route</span>(<span class="str">"/docs"</span>.to_string(), <span class="str">"docs.html"</span>.to_string());
+
+    <span class="cm">// Launch</span>
+    app.<span class="fn">server</span>();
 }</pre>
       </div>
     </div>
   </section>
 
-  <!-- Stats -->
   <section class="stats">
     <div class="stat">
       <div class="stat-value">0</div>
       <div class="stat-label">Dependencies</div>
     </div>
     <div class="stat">
-      <div class="stat-value">&lt;1μs</div>
+      <div class="stat-value">&lt;1ms</div>
       <div class="stat-label">Response Time</div>
     </div>
     <div class="stat">
@@ -587,7 +585,6 @@
     </div>
   </section>
 
-  <!-- Features -->
   <section class="features" id="features">
     <div class="features-header">
       <h2>Built for Performance</h2>
@@ -599,7 +596,7 @@
           <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
         </svg>
         <h3 class="feature-title">Blazing Fast</h3>
-        <p class="feature-desc">Sub-microsecond response times with async I/O and efficient connection pooling.</p>
+        <p class="feature-desc">Sub-millisecond latency. Routes are pre-loaded into memory, bypassing disk reads during requests.</p>
       </div>
       <div class="feature-card">
         <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -622,8 +619,8 @@
           <polyline points="16 18 22 12 16 6"/>
           <polyline points="8 6 2 12 8 18"/>
         </svg>
-        <h3 class="feature-title">Type Safe Routing</h3>
-        <p class="feature-desc">Routes are validated at compile time. No runtime surprises or 404s from typos.</p>
+        <h3 class="feature-title">In-Memory Routing</h3>
+        <p class="feature-desc">Routes are stored in a HashMap at startup. O(1) lookup speed for every incoming request.</p>
       </div>
       <div class="feature-card">
         <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -631,8 +628,8 @@
           <line x1="8" y1="21" x2="16" y2="21"/>
           <line x1="12" y1="17" x2="12" y2="21"/>
         </svg>
-        <h3 class="feature-title">Native Async</h3>
-        <p class="feature-desc">Built on Rust's async/await with custom executor. Handle millions of concurrent connections.</p>
+        <h3 class="feature-title">Deterministic I/O</h3>
+        <p class="feature-desc">Predictable, synchronous request handling. No massive runtime or hidden background threads.</p>
       </div>
       <div class="feature-card">
         <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -645,22 +642,20 @@
           <path d="M4.93 19.07l2.83-2.83"/>
           <path d="M16.24 7.76l2.83-2.83"/>
         </svg>
-        <h3 class="feature-title">Observable</h3>
-        <p class="feature-desc">Built-in metrics, tracing, and structured logging. Know exactly what's happening.</p>
+        <h3 class="feature-title">Raw Control</h3>
+        <p class="feature-desc">Direct access to the TCP stream. No middleware bloat hiding the byte stream from you.</p>
       </div>
     </div>
   </section>
 
-  <!-- Install -->
   <section class="install" id="install">
     <h2>Get Started in Seconds</h2>
-    <p>Add Xeo to your Cargo.toml and start building.</p>
+    <p>Add Xeo to your Cargo.toml dependencies.</p>
     <div class="install-code">
-      <span>$</span> cargo add xeo
+      [dependencies] xeo = "0.1.3"
     </div>
   </section>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="footer-left">
       &copy; 2026 Xeo. MIT Licensed.
