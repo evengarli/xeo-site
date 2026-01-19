@@ -3,138 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation | XEO</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        bg: '#0f172a',      
-                        surface: '#1e293b', 
-                        accent: '#38bdf8',  
-                    }
-                }
-            }
-        }
-    </script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-
+    <title>XEO | Documentation</title>
     <style>
-        body { background-color: #0f172a; color: #cbd5e1; }
-        .sidebar-link { display: block; padding: 6px 0; color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
-        .sidebar-link:hover, .sidebar-link.active { color: #38bdf8; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --bg: #0d0d0d;
+            --sidebar-bg: #141414;
+            --accent: #FF4F00;
+            --text: #e0e0e0;
+            --code-bg: #1e1e1e;
+        }
+
+        body {
+            margin: 0; display: flex;
+            background-color: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif;
+            height: 100vh; overflow: hidden;
+        }
+
+        /* --- Sidebar --- */
+        aside {
+            width: 280px; background: var(--sidebar-bg);
+            border-right: 1px solid #333;
+            display: flex; flex-direction: column;
+            padding: 30px;
+        }
+
+        .brand { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 40px; letter-spacing: -1px; }
+        .brand span { color: var(--accent); }
+
+        .menu-label { font-size: 0.75rem; text-transform: uppercase; color: #666; margin-bottom: 15px; font-weight: 700; }
         
-        /* Typography for Docs Content */
-        .prose h1 { color: white; font-size: 2.25rem; font-weight: 700; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
-        .prose h2 { color: white; font-size: 1.5rem; font-weight: 600; margin-top: 3rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #1e293b; }
-        .prose p { margin-bottom: 1.5rem; line-height: 1.75; color: #94a3b8; }
-        .prose pre { background: #020617; border: 1px solid #1e293b; padding: 1.25rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; color: #e2e8f0; }
-        .prose code { background: #1e293b; color: #e2e8f0; padding: 0.2rem 0.4rem; rounded: 0.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
-        .prose ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; color: #94a3b8; }
-        .prose li { margin-bottom: 0.5rem; }
+        aside a {
+            color: #888; text-decoration: none; display: block;
+            margin-bottom: 12px; font-size: 0.95rem; transition: 0.2s;
+        }
+        aside a:hover { color: var(--accent); transform: translateX(5px); }
+        aside a.active { color: #fff; font-weight: 600; }
+        
+        .back-home { margin-top: auto; color: #555; font-size: 0.9rem; }
+
+        /* --- Main Content --- */
+        main {
+            flex: 1; padding: 60px 80px; overflow-y: auto; scroll-behavior: smooth;
+        }
+
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        h2 { font-size: 1.8rem; margin-top: 50px; margin-bottom: 20px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        p { line-height: 1.7; color: #bbb; max-width: 800px; margin-bottom: 20px; }
+        
+        /* --- Code Blocks --- */
+        pre {
+            background: var(--code-bg);
+            padding: 20px; border-radius: 8px;
+            border: 1px solid #333;
+            overflow-x: auto;
+            margin: 25px 0;
+        }
+        code { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #a9b7c6; }
+        
+        .kw { color: #cc7832; } /* Keyword (orange) */
+        .str { color: #6a8759; } /* String (green) */
+        .fn { color: #ffc66d; } /* Function (yellow) */
+        .num { color: #6897bb; } /* Number (blue) */
+        .comment { color: #808080; }
+
+        .note {
+            background: rgba(255, 79, 0, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
     </style>
 </head>
-<body class="antialiased">
+<body>
 
-    <nav class="fixed top-0 w-full z-50 bg-[#0f172a]/90 backdrop-blur border-b border-slate-800">
-        <div class="w-full px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-8">
-                <a href="index.html" class="flex items-center gap-2 font-bold text-lg tracking-tight text-white">
-                    <div class="w-6 h-6 bg-white text-slate-900 rounded flex items-center justify-center text-xs">X</div>
-                    XEO <span class="text-slate-500 font-normal text-sm ml-2">Docs</span>
-                </a>
-            </div>
-            <a href="https://github.com/evengarli/xeo" class="text-slate-400 hover:text-white"><i data-lucide="github" class="w-5 h-5"></i></a>
-        </div>
-    </nav>
-
-    <div class="flex max-w-[1400px] mx-auto pt-16 min-h-screen">
+    <aside>
+        <div class="brand">XEO <span>DOCS</span></div>
         
-        <aside class="w-64 fixed h-[calc(100vh-4rem)] overflow-y-auto border-r border-slate-800 hidden lg:block p-8">
-            <div class="mb-8">
-                <h5 class="text-xs font-semibold text-white uppercase tracking-wider mb-4">Getting Started</h5>
-                <a href="#" class="sidebar-link active">Introduction</a>
-                <a href="#" class="sidebar-link">Installation</a>
-                <a href="#" class="sidebar-link">Quick Start</a>
+        <div class="menu-label">Getting Started</div>
+        <a href="#intro">Introduction</a>
+        <a href="#install">Installation</a>
+        
+        <div class="menu-label">Core Concepts</div>
+        <a href="#routing">Routing & Pages</a>
+        <a href="#deploy">Deployment</a>
+        
+        <a href="/" class="back-home">← Back to Website</a>
+    </aside>
+
+    <main>
+        <section id="intro">
+            <h1>Introduction</h1>
+            <p>Xeo is a minimalistic web framework that prioritizes control. Unlike high-level frameworks that hide the details, Xeo exposes the raw TCP stream, giving you complete authority over how bytes are handled.</p>
+        </section>
+
+        <section id="install">
+            <h2>Installation</h2>
+            <p>To start using Xeo, simply add it to your project dependencies or clone the core files into your library path.</p>
+            <pre><code><span class="comment"># In your Cargo.toml</span>
+[dependencies]
+xeo = <span class="str">"0.1.3"</span></code></pre>
+        </section>
+
+        <section id="routing">
+            <h2>Routing</h2>
+            <p>Xeo uses an <b>In-Memory HashMap</b> to store routes. This means all file reads happen once at startup, ensuring incredible runtime performance.</p>
+            
+            <div class="note">
+                <strong>Tip:</strong> The first argument is the browser URL, the second is the file on your disk. They do not have to match!
             </div>
-            <div class="mb-8">
-                <h5 class="text-xs font-semibold text-white uppercase tracking-wider mb-4">Core Concepts</h5>
-                <a href="#" class="sidebar-link">Routing</a>
-                <a href="#" class="sidebar-link">Handlers</a>
-                <a href="#" class="sidebar-link">Middleware</a>
-                <a href="#" class="sidebar-link">State Management</a>
-            </div>
-            <div>
-                <h5 class="text-xs font-semibold text-white uppercase tracking-wider mb-4">Reference</h5>
-                <a href="#" class="sidebar-link">Configuration</a>
-                <a href="#" class="sidebar-link">Error Handling</a>
-            </div>
-        </aside>
 
-        <main class="flex-1 lg:pl-64 w-full">
-            <div class="max-w-3xl mx-auto py-12 px-6 prose">
-                
-                <h1>Introduction</h1>
-                <p class="text-lg text-slate-300">
-                    XEO is a high-performance web framework for Rust, designed to be secure by default without sacrificing speed.
-                </p>
+            <pre><code><span class="kw">use</span> xeo::Xeo;
 
-                <h2>Why XEO?</h2>
-                <p>
-                    Rust web frameworks often force you to choose between compile-time safety and developer ergonomics. 
-                    XEO aims to solve this by providing a familiar API (inspired by Express and Axum) while enforcing strict security policies at the type level.
-                </p>
-                <ul>
-                    <li><strong>Safety:</strong> Automatic protection against path traversal and injection attacks.</li>
-                    <li><strong>Speed:</strong> Built on top of Hyper, achieving industry-leading throughput.</li>
-                    <li><strong>Simplicity:</strong> No complex macros or boilerplate required to get started.</li>
-                </ul>
+<span class="kw">fn</span> <span class="fn">main</span>() {
+    <span class="comment">// 1. Initialize Server (Port, IP)</span>
+    <span class="kw">let</span> <span class="kw">mut</span> app = Xeo::<span class="fn">new</span>(<span class="num">8080</span>, <span class="str">"0.0.0.0"</span>.to_string());
 
-                <h2>Installation</h2>
-                <p>Add XEO to your <code>Cargo.toml</code> file:</p>
-                <pre><code>[dependencies]
-xeo = "1.0.0"
-tokio = { version = "1", features = ["full"] }</code></pre>
+    <span class="comment">// 2. Register Routes</span>
+    app.<span class="fn">route</span>(<span class="str">"/"</span>.to_string(), <span class="str">"index.html"</span>.to_string());
+    app.<span class="fn">route</span>(<span class="str">"/docs"</span>.to_string(), <span class="str">"docs.html"</span>.to_string());
 
-                <h2>Basic Usage</h2>
-                <p>Here is a minimal example of an XEO application:</p>
-                <pre><code>use xeo::prelude::*;
-
-#[tokio::main]
-async fn main() {
-    let app = Router::new()
-        .route("/", get(|| async { "Hello World" }));
-
-    Server::bind("0.0.0.0:3000")
-        .serve(app)
-        .await
-        .unwrap();
+    <span class="comment">// 3. Launch</span>
+    app.<span class="fn">server</span>();
 }</code></pre>
+        </section>
 
-                <div class="mt-16 flex justify-between border-t border-slate-800 pt-8">
-                    <div></div>
-                    <a href="#" class="text-right group">
-                        <div class="text-xs text-slate-500 mb-1">Next Page</div>
-                        <div class="text-accent font-medium flex items-center gap-2 group-hover:text-white transition-colors">
-                            Installation Guide <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                        </div>
-                    </a>
-                </div>
+        <section id="deploy">
+            <h2>Deployment</h2>
+            <p>Ready to go live? Xeo compiles to a single binary. Whether you use a DigitalOcean Droplet or a container, the process is simple.</p>
+            <p>Always build for release to enable compiler optimizations:</p>
+            <pre><code>cargo build --release
+./target/release/xeo_app</code></pre>
+        </section>
 
-            </div>
-        </main>
-    </div>
+        <br><br><br>
+    </main>
 
-    <script>lucide.createIcons();</script>
 </body>
 </html>
