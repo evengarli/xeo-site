@@ -1,168 +1,402 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XEO | Framework</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xeo — The Metal of the Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        :root {
-            /* THE MONOCHROME PALETTE */
-            --bg: #000000;
-            --surface: #0a0a0a;
-            --border: #333333;
-            --text-main: #ffffff;
-            --text-muted: #888888;
-            --accent: #ffffff; /* White is now the accent */
-        }
+    html {
+      scroll-behavior: smooth;
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-        /* --- Navbar --- */
-        nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 40px;
-            border-bottom: 1px solid var(--border);
-            position: fixed; width: 100%; top: 0; 
-            background: rgba(0,0,0, 0.8);
-            backdrop-filter: blur(8px);
-            z-index: 100;
-        }
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid #333;
+    }
 
-        .logo { font-size: 1.2rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
-        
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            margin-left: 30px;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-        .nav-links a:hover { color: var(--text-main); }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+    }
 
-        /* --- Hero Section --- */
-        header {
-            height: 90vh;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center;
-            padding: 0 20px;
-            background-image: radial-gradient(#111 1px, transparent 1px);
-            background-size: 40px 40px; /* Subtle grid pattern */
-        }
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+    }
 
-        h1 {
-            font-size: 6rem;
-            font-weight: 600;
-            letter-spacing: -3px;
-            line-height: 1;
-            margin-bottom: 30px;
-            background: linear-gradient(180deg, #fff, #666);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: opacity 0.2s ease;
+    }
 
-        p.subtitle {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            max-width: 500px;
-            margin-bottom: 50px;
-            line-height: 1.6;
-        }
+    .nav-links a:hover {
+      opacity: 0.6;
+    }
 
-        .btn {
-            padding: 14px 35px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.2s;
-            border: 1px solid var(--text-main);
-        }
-        
-        .btn-primary {
-            background: var(--text-main);
-            color: var(--bg);
-        }
-        .btn-primary:hover {
-            background: transparent;
-            color: var(--text-main);
-        }
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 6rem 2rem;
+      border-bottom: 1px solid #333;
+    }
 
-        .btn-secondary {
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            margin-left: 20px;
-        }
-        .btn-secondary:hover {
-            border-color: var(--text-main);
-            color: var(--text-main);
-        }
+    .hero-headline {
+      font-size: clamp(3rem, 10vw, 6rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+      max-width: 900px;
+    }
 
-        /* --- Features --- */
-        .features {
-            border-top: 1px solid var(--border);
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-        }
-        
-        .card {
-            padding: 80px 40px;
-            border-right: 1px solid var(--border);
-        }
-        .card:last-child { border-right: none; }
+    .hero-subtext {
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: #888;
+      max-width: 500px;
+      margin-bottom: 3rem;
+      line-height: 1.6;
+    }
 
-        .card h3 { font-size: 1.2rem; margin-bottom: 15px; color: #fff; }
-        .card p { color: #666; font-size: 0.95rem; line-height: 1.7; }
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            h1 { font-size: 3.5rem; }
-            .features { grid-template-columns: 1fr; }
-            .card { border-right: none; border-bottom: 1px solid var(--border); }
-        }
-    </style>
+    .btn {
+      padding: 1rem 2rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid #fff;
+    }
+
+    .btn-primary {
+      background: #fff;
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      background: #000;
+      color: #fff;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+    }
+
+    .btn-outline:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    /* Features Grid */
+    .features {
+      padding: 0;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .feature-card {
+      padding: 4rem 3rem;
+      border-right: 1px solid #333;
+      border-bottom: 1px solid #333;
+    }
+
+    .feature-card:nth-child(3n) {
+      border-right: none;
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 2rem;
+      stroke: #fff;
+      stroke-width: 1.5;
+      fill: none;
+    }
+
+    .feature-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-description {
+      font-size: 0.9375rem;
+      color: #888;
+      line-height: 1.7;
+    }
+
+    /* Code Section */
+    .code-section {
+      padding: 6rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-bottom: 1px solid #333;
+    }
+
+    .code-section h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .code-section p {
+      color: #888;
+      margin-bottom: 3rem;
+      font-size: 1.125rem;
+    }
+
+    .code-block {
+      background: #0a0a0a;
+      border: 1px solid #333;
+      padding: 2rem;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.875rem;
+      line-height: 1.8;
+      max-width: 700px;
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .code-block .keyword {
+      color: #ff7b72;
+    }
+
+    .code-block .function {
+      color: #d2a8ff;
+    }
+
+    .code-block .string {
+      color: #a5d6ff;
+    }
+
+    .code-block .comment {
+      color: #555;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 3rem 2rem;
+      text-align: center;
+      border-top: 1px solid #333;
+    }
+
+    .footer p {
+      font-size: 0.875rem;
+      color: #555;
+      letter-spacing: 0.02em;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-card {
+        border-right: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .navbar {
+        padding: 1rem 1.5rem;
+      }
+
+      .nav-links {
+        gap: 1.5rem;
+      }
+
+      .hero {
+        padding: 8rem 1.5rem 4rem;
+      }
+
+      .hero-subtext {
+        font-size: 1rem;
+      }
+
+      .btn {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.8rem;
+      }
+
+      .feature-card {
+        padding: 3rem 1.5rem;
+      }
+
+      .code-section {
+        padding: 4rem 1.5rem;
+      }
+
+      .code-section h2 {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">XEO</div>
-        <div class="nav-links">
-            <a href="https://github.com">GitHub</a>
-            <a href="/docs">Documentation</a>
-        </div>
-    </nav>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">XEO</div>
+    <div class="nav-links">
+      <a href="#docs">Docs</a>
+      <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </nav>
 
-    <header>
-        <h1>Raw Power.<br>Pure Rust.</h1>
-        <p class="subtitle">A zero-dependency HTTP framework designed for systems engineers who demand absolute control.</p>
-        
-        <div>
-            <a href="/docs" class="btn btn-primary">Start Building</a>
-            <a href="https://github.com" class="btn btn-secondary">Source Code</a>
-        </div>
-    </header>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1 class="hero-headline">The Metal of the Web.</h1>
+    <p class="hero-subtext">A zero-dependency Rust framework for raw TCP control.</p>
+    <div class="hero-buttons">
+      <a href="#get-started" class="btn btn-primary">Get Started</a>
+      <a href="#docs" class="btn btn-outline">Read Docs</a>
+    </div>
+  </section>
 
-    <section class="features">
-        <div class="card">
-            <h3>01. In-Memory</h3>
-            <p>Routes are hashed and stored in RAM. Xeo never touches the disk after startup.</p>
-        </div>
-        <div class="card">
-            <h3>02. Type Safe</h3>
-            <p>Leveraging Rust's borrow checker to ensure memory safety without garbage collection.</p>
-        </div>
-        <div class="card">
-            <h3>03. Minimalist</h3>
-            <p>No bloat. No hidden logic. Just a raw TCP stream mapped to your functions.</p>
-        </div>
-    </section>
+  <!-- Features Grid -->
+  <section class="features">
+    <div class="features-grid">
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 48 48">
+          <path d="M24 4L4 14v20l20 10 20-10V14L24 4z"/>
+          <path d="M4 14l20 10 20-10"/>
+          <path d="M24 24v20"/>
+        </svg>
+        <h3 class="feature-title">Zero Dependencies</h3>
+        <p class="feature-description">No bloat. No hidden costs. Just pure Rust compiled directly to machine code with zero runtime overhead.</p>
+      </div>
+
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 48 48">
+          <circle cx="24" cy="24" r="18"/>
+          <path d="M24 12v12l8 8"/>
+        </svg>
+        <h3 class="feature-title">Blazing Fast</h3>
+        <p class="feature-description">Sub-microsecond response times. Handle millions of concurrent connections with minimal memory footprint.</p>
+      </div>
+
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 48 48">
+          <rect x="6" y="6" width="36" height="36" rx="4"/>
+          <path d="M6 18h36"/>
+          <path d="M18 18v24"/>
+        </svg>
+        <h3 class="feature-title">Raw TCP Control</h3>
+        <p class="feature-description">Direct socket access. Full control over every byte that enters and leaves your server. No abstractions hiding the metal.</p>
+      </div>
+
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 48 48">
+          <path d="M12 24h24"/>
+          <path d="M24 12v24"/>
+          <circle cx="24" cy="24" r="18"/>
+        </svg>
+        <h3 class="feature-title">Type Safe</h3>
+        <p class="feature-description">Rust's ownership model guarantees memory safety at compile time. No null pointers. No data races. Ever.</p>
+      </div>
+
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 48 48">
+          <path d="M8 40l8-16 8 12 8-20 8 24"/>
+          <path d="M4 40h40"/>
+        </svg>
+        <h3 class="feature-title">Observable</h3>
+        <p class="feature-description">Built-in metrics and tracing. Know exactly what's happening inside your server at any moment.</p>
+      </div>
+
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 48 48">
+          <path d="M24 4v8"/>
+          <path d="M24 36v8"/>
+          <path d="M4 24h8"/>
+          <path d="M36 24h8"/>
+          <circle cx="24" cy="24" r="8"/>
+        </svg>
+        <h3 class="feature-title">Modular</h3>
+        <p class="feature-description">Take what you need. Leave what you don't. Every component is optional and replaceable.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Code Example -->
+  <section class="code-section" id="get-started">
+    <h2>Get Started in Seconds</h2>
+    <p>One command. Zero configuration.</p>
+    <pre class="code-block"><span class="comment">// main.rs</span>
+<span class="keyword">use</span> xeo::prelude::*;
+
+<span class="keyword">fn</span> <span class="function">main</span>() {
+    Xeo::<span class="function">new</span>()
+        .<span class="function">route</span>(<span class="string">"/"</span>, |_req| <span class="string">"Hello, Metal."</span>)
+        .<span class="function">bind</span>(<span class="string">"0.0.0.0:8080"</span>)
+        .<span class="function">run</span>();
+}</pre>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2026 Xeo Framework. Built for engineers who demand control.</p>
+  </footer>
 
 </body>
 </html>
