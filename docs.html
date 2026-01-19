@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xeo Documentation — Zero-Cost Rust Web Framework</title>
+    <title>Documentation — Xeo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after {
             margin: 0;
@@ -16,11 +16,14 @@
 
         :root {
             --bg: #050505;
-            --code-bg: #111;
-            --border: #333;
-            --text: #ccc;
-            --text-muted: #666;
-            --white: #fff;
+            --surface: #0a0a0a;
+            --border: #1a1a1a;
+            --border-light: #262626;
+            --text: #a3a3a3;
+            --text-muted: #525252;
+            --white: #fafafa;
+            --accent: #f97316;
+            --accent-dim: rgba(249, 115, 22, 0.15);
         }
 
         html {
@@ -32,141 +35,289 @@
             background-color: var(--bg);
             color: var(--text);
             line-height: 1.6;
-            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 48px;
+            height: 64px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 48px;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--white);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            transition: color 0.15s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--white);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .nav-btn-ghost {
+            color: var(--text);
+        }
+
+        .nav-btn-ghost:hover {
+            color: var(--white);
+        }
+
+        .nav-btn-primary {
+            background: var(--white);
+            color: var(--bg);
+        }
+
+        .nav-btn-primary:hover {
+            background: var(--text);
         }
 
         /* Layout */
         .layout {
             display: flex;
+            padding-top: 64px;
             min-height: 100vh;
         }
 
         /* Sidebar */
         .sidebar {
             position: fixed;
-            top: 0;
+            top: 64px;
             left: 0;
-            width: 260px;
-            height: 100vh;
-            background-color: var(--bg);
+            width: 280px;
+            height: calc(100vh - 64px);
+            background: var(--bg);
             border-right: 1px solid var(--border);
             padding: 32px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 48px;
             overflow-y: auto;
         }
 
-        .sidebar-logo {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--white);
-            text-decoration: none;
-            letter-spacing: -0.02em;
+        .sidebar-section {
+            margin-bottom: 32px;
         }
 
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .nav-section-title {
+        .sidebar-title {
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.1em;
             color: var(--text-muted);
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            padding-left: 12px;
         }
 
-        .nav-link {
-            display: block;
-            padding: 8px 12px;
-            color: var(--text-muted);
-            text-decoration: none;
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
             font-size: 14px;
-            font-weight: 400;
-            border-radius: 6px;
+            font-weight: 500;
+            color: var(--text);
+            border-radius: 8px;
             transition: all 0.15s ease;
         }
 
-        .nav-link:hover {
-            color: var(--text);
-            background-color: rgba(255, 255, 255, 0.04);
-        }
-
-        .nav-link.active {
+        .sidebar-link:hover {
             color: var(--white);
-            font-weight: 600;
-            background-color: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
         }
 
-        /* Main Content */
+        .sidebar-link.active {
+            color: var(--white);
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+        }
+
+        .sidebar-link svg {
+            width: 16px;
+            height: 16px;
+            opacity: 0.6;
+        }
+
+        .sidebar-link.active svg {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        /* Main */
         .main {
             flex: 1;
-            margin-left: 260px;
-            padding: 48px 64px;
-            max-width: 900px;
+            margin-left: 280px;
+            max-width: 820px;
+            padding: 48px 64px 96px;
         }
 
+        /* Page Header */
         .page-header {
-            margin-bottom: 48px;
-            padding-bottom: 32px;
+            margin-bottom: 56px;
+            padding-bottom: 40px;
             border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -48px;
+            left: -64px;
+            width: 500px;
+            height: 400px;
+            background: radial-gradient(ellipse at top left, rgba(249, 115, 22, 0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .page-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--accent-dim);
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 20px;
         }
 
         .page-title {
-            font-size: 40px;
-            font-weight: 700;
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
             color: var(--white);
-            letter-spacing: -0.03em;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .page-description {
             font-size: 18px;
-            color: var(--text-muted);
-            line-height: 1.5;
+            color: var(--text);
+            line-height: 1.7;
+            max-width: 560px;
         }
 
         /* Sections */
         .section {
-            margin-bottom: 56px;
+            margin-bottom: 64px;
+            scroll-margin-top: 100px;
         }
 
         .section-title {
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
             color: var(--white);
-            letter-spacing: -0.02em;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--accent);
+            border-radius: 2px;
         }
 
         .section p {
-            margin-bottom: 20px;
             font-size: 15px;
             color: var(--text);
+            margin-bottom: 20px;
+            line-height: 1.7;
         }
 
         .section ul {
             margin-bottom: 20px;
-            padding-left: 24px;
+            padding-left: 0;
+            list-style: none;
         }
 
         .section li {
-            margin-bottom: 8px;
-            font-size: 15px;
+            font-size: 14px;
             color: var(--text);
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .section li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .section li code {
+            color: var(--white);
         }
 
         /* Code Blocks */
         .code-block {
-            background-color: var(--code-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
             margin: 24px 0;
             overflow: hidden;
         }
@@ -175,8 +326,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 16px;
-            background-color: rgba(255, 255, 255, 0.02);
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.02);
             border-bottom: 1px solid var(--border);
         }
 
@@ -189,64 +340,77 @@
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background-color: var(--border);
+            background: var(--border-light);
         }
 
         .code-filename {
             font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
             color: var(--text-muted);
+            padding: 4px 10px;
+            background: var(--bg);
+            border-radius: 6px;
         }
 
-        .code-content {
-            padding: 20px;
+        .code-body {
+            padding: 20px 24px;
             overflow-x: auto;
         }
 
-        .code-content pre {
+        .code-body pre {
             font-family: 'JetBrains Mono', monospace;
             font-size: 13px;
-            line-height: 1.7;
+            line-height: 1.8;
             color: var(--text);
             margin: 0;
         }
 
-        /* Syntax Highlighting */
-        .keyword { color: #c678dd; }
-        .string { color: #98c379; }
-        .function { color: #61afef; }
-        .comment { color: #5c6370; font-style: italic; }
-        .variable { color: #e5c07b; }
-        .operator { color: #56b6c2; }
+        .code-body .kw { color: #c678dd; }
+        .code-body .fn { color: #61afef; }
+        .code-body .str { color: #98c379; }
+        .code-body .cm { color: #5c6370; }
+        .code-body .attr { color: #e5c07b; }
+        .code-body .mac { color: #e5c07b; }
+        .code-body .num { color: #d19a66; }
 
         /* Inline Code */
         code {
             font-family: 'JetBrains Mono', monospace;
             font-size: 13px;
-            background-color: var(--code-bg);
-            border: 1px solid var(--border);
-            padding: 2px 6px;
-            border-radius: 4px;
+            background: var(--surface);
+            border: 1px solid var(--border-light);
+            padding: 3px 8px;
+            border-radius: 6px;
             color: var(--white);
         }
 
         /* Callout */
         .callout {
-            background-color: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border);
-            border-left: 3px solid var(--white);
-            border-radius: 6px;
-            padding: 16px 20px;
-            margin: 24px 0;
+            background: var(--surface);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 28px 0;
+            display: flex;
+            gap: 16px;
+        }
+
+        .callout-icon {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            color: var(--accent);
+        }
+
+        .callout-content {
+            flex: 1;
         }
 
         .callout-title {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--white);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .callout p {
@@ -255,63 +419,231 @@
             color: var(--text);
         }
 
+        .callout.tip {
+            border-color: rgba(249, 115, 22, 0.3);
+            background: rgba(249, 115, 22, 0.05);
+        }
+
+        .callout.note {
+            border-color: rgba(96, 165, 250, 0.3);
+            background: rgba(96, 165, 250, 0.05);
+        }
+
+        .callout.note .callout-icon {
+            color: #60a5fa;
+        }
+
+        /* Feature Cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 28px 0;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--border-light);
+            transform: translateY(-2px);
+        }
+
+        .feature-card h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 13px;
+            color: var(--text);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            margin-left: 280px;
+            padding: 32px 64px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-left {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            font-size: 14px;
+            color: var(--text-muted);
+            transition: color 0.15s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--white);
+        }
+
         /* Responsive */
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
             .sidebar {
-                position: relative;
-                width: 100%;
-                height: auto;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
+                display: none;
             }
 
-            .layout {
-                flex-direction: column;
+            .main,
+            .footer {
+                margin-left: 0;
             }
 
             .main {
-                margin-left: 0;
-                padding: 32px 24px;
+                padding: 32px 24px 64px;
+            }
+
+            .footer {
+                padding: 24px;
             }
 
             .page-title {
-                font-size: 32px;
+                font-size: 36px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 0 16px;
+            }
+
+            .nav-links,
+            .nav-right {
+                display: none;
+            }
+
+            .footer {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="xeo.html" class="logo">Xeo</a>
+            <div class="nav-links">
+                <a href="docs.html" class="active">Docs</a>
+                <a href="xeo.html#features">Features</a>
+                <a href="https://github.com" target="_blank">GitHub</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <a href="https://github.com" class="nav-btn nav-btn-ghost" target="_blank">Star on GitHub</a>
+            <a href="#installation" class="nav-btn nav-btn-primary">Get Started</a>
+        </div>
+    </nav>
+
     <div class="layout">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <a href="index.html" class="sidebar-logo">Xeo</a>
-            
-            <nav class="sidebar-nav">
-                <span class="nav-section-title">Getting Started</span>
-                <a href="#installation" class="nav-link active">Installation</a>
-                <a href="#quickstart" class="nav-link">Quick Start</a>
-                
-                <span class="nav-section-title" style="margin-top: 24px;">Core Concepts</span>
-                <a href="#routing" class="nav-link">Routing</a>
-                <a href="#components" class="nav-link">Components</a>
-                <a href="#state" class="nav-link">State</a>
-                
-                <span class="nav-section-title" style="margin-top: 24px;">Production</span>
-                <a href="#deployment" class="nav-link">Deployment</a>
-            </nav>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Getting Started</div>
+                <div class="sidebar-links">
+                    <a href="#installation" class="sidebar-link active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Installation
+                    </a>
+                    <a href="#quickstart" class="sidebar-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                        Quick Start
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Core Concepts</div>
+                <div class="sidebar-links">
+                    <a href="#routing" class="sidebar-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                        </svg>
+                        Routing
+                    </a>
+                    <a href="#extractors" class="sidebar-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="16 18 22 12 16 6"/>
+                            <polyline points="8 6 2 12 8 18"/>
+                        </svg>
+                        Extractors
+                    </a>
+                    <a href="#state" class="sidebar-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                        State
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Production</div>
+                <div class="sidebar-links">
+                    <a href="#deployment" class="sidebar-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                        </svg>
+                        Deployment
+                    </a>
+                </div>
+            </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main">
             <header class="page-header">
-                <h1 class="page-title">Documentation</h1>
-                <p class="page-description">Everything you need to build blazingly fast web servers with Xeo and Rust.</p>
+                <div class="page-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                    Documentation
+                </div>
+                <h1 class="page-title">Build with Xeo</h1>
+                <p class="page-description">Everything you need to build blazingly fast web servers with zero-cost abstractions and compile-time guarantees.</p>
             </header>
 
             <!-- Installation -->
             <section id="installation" class="section">
                 <h2 class="section-title">Installation</h2>
-                <p>Add Xeo to your project via Cargo. No external dependencies required.</p>
+                <p>Add Xeo to your Rust project via Cargo. Zero external dependencies required.</p>
                 
                 <div class="code-block">
                     <div class="code-header">
@@ -322,29 +654,36 @@
                         </div>
                         <span class="code-filename">terminal</span>
                     </div>
-                    <div class="code-content">
-<pre><span class="comment"># Add to existing project</span>
+                    <div class="code-body">
+<pre><span class="cm"># Add to existing project</span>
 cargo add xeo
 
-<span class="comment"># Or create a new project</span>
+<span class="cm"># Or create a new project</span>
 cargo new my-server
-<span class="keyword">cd</span> my-server
+<span class="kw">cd</span> my-server
 cargo add xeo</pre>
                     </div>
                 </div>
 
-                <p>Xeo compiles to a single native binary with zero runtime dependencies. No garbage collector, no virtual machine.</p>
+                <p>Xeo compiles to a single native binary with no runtime dependencies. No garbage collector, no virtual machine — just raw performance.</p>
 
-                <div class="callout">
-                    <div class="callout-title">Note</div>
-                    <p>Xeo requires Rust 1.75 or later. Run <code>rustc --version</code> to check your version.</p>
+                <div class="callout note">
+                    <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="16" x2="12" y2="12"/>
+                        <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <div class="callout-content">
+                        <div class="callout-title">Requirements</div>
+                        <p>Xeo requires Rust 1.75 or later. Run <code>rustc --version</code> to check your version.</p>
+                    </div>
                 </div>
             </section>
 
             <!-- Quick Start -->
             <section id="quickstart" class="section">
                 <h2 class="section-title">Quick Start</h2>
-                <p>Create a minimal server in just a few lines of Rust:</p>
+                <p>Create a minimal server in just a few lines of idiomatic Rust:</p>
 
                 <div class="code-block">
                     <div class="code-header">
@@ -355,22 +694,33 @@ cargo add xeo</pre>
                         </div>
                         <span class="code-filename">src/main.rs</span>
                     </div>
-                    <div class="code-content">
-<pre><span class="keyword">use</span> xeo::prelude::*;
+                    <div class="code-body">
+<pre><span class="kw">use</span> xeo::prelude::*;
 
-<span class="variable">#[xeo::main]</span>
-<span class="keyword">async fn</span> <span class="function">main</span>() {
+<span class="mac">#[xeo::main]</span>
+<span class="kw">async fn</span> <span class="fn">main</span>() {
     Xeo::new()
-        .route(<span class="string">"/"</span>, get(|| <span class="keyword">async</span> { <span class="string">"Hello, World!"</span> }))
-        .bind(<span class="string">"127.0.0.1:3000"</span>)
-        .<span class="keyword">await</span>
+        .route(<span class="str">"/"</span>, get(|| <span class="kw">async</span> { <span class="str">"Hello, Rust!"</span> }))
+        .bind(<span class="str">"127.0.0.1:3000"</span>)
+        .<span class="kw">await</span>
         .run()
-        .<span class="keyword">await</span>;
+        .<span class="kw">await</span>;
 }</pre>
                     </div>
                 </div>
 
                 <p>Run with <code>cargo run</code> and visit <code>http://localhost:3000</code> in your browser.</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Async by Default</h4>
+                        <p>Built on Rust's async/await with an optimized runtime for maximum concurrency.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Type Safe</h4>
+                        <p>Catch errors at compile time, not in production. Routes, handlers, and responses are all typed.</p>
+                    </div>
+                </div>
             </section>
 
             <!-- Routing -->
@@ -387,30 +737,30 @@ cargo add xeo</pre>
                         </div>
                         <span class="code-filename">src/main.rs</span>
                     </div>
-                    <div class="code-content">
-<pre><span class="keyword">use</span> xeo::prelude::*;
+                    <div class="code-body">
+<pre><span class="kw">use</span> xeo::prelude::*;
 
-<span class="keyword">async fn</span> <span class="function">get_user</span>(Path(id): Path&lt;u64&gt;) -&gt; String {
-    format!(<span class="string">"User: {}"</span>, id)
+<span class="kw">async fn</span> <span class="fn">get_user</span>(Path(id): Path&lt;u64&gt;) -&gt; String {
+    format!(<span class="str">"User: {}"</span>, id)
 }
 
-<span class="keyword">async fn</span> <span class="function">create_user</span>(Json(body): Json&lt;CreateUser&gt;) -&gt; StatusCode {
-    <span class="comment">// Handle user creation</span>
+<span class="kw">async fn</span> <span class="fn">create_user</span>(Json(body): Json&lt;CreateUser&gt;) -&gt; StatusCode {
+    <span class="cm">// Handle user creation</span>
     StatusCode::CREATED
 }
 
-<span class="variable">#[xeo::main]</span>
-<span class="keyword">async fn</span> <span class="function">main</span>() {
+<span class="mac">#[xeo::main]</span>
+<span class="kw">async fn</span> <span class="fn">main</span>() {
     Xeo::new()
-        .route(<span class="string">"/users/:id"</span>, get(get_user))
-        .route(<span class="string">"/users"</span>, post(create_user))
-        .bind(<span class="string">"0.0.0.0:8080"</span>).<span class="keyword">await</span>
-        .run().<span class="keyword">await</span>;
+        .route(<span class="str">"/users/:id"</span>, get(get_user))
+        .route(<span class="str">"/users"</span>, post(create_user))
+        .bind(<span class="str">"0.0.0.0:8080"</span>).<span class="kw">await</span>
+        .run().<span class="kw">await</span>;
 }</pre>
                     </div>
                 </div>
 
-                <p>Route parameters are extracted using the <code>Path</code> extractor. Type mismatches are caught at compile time.</p>
+                <p>Route parameters are extracted using the <code>Path</code> extractor. Type mismatches are caught at compile time — no runtime surprises.</p>
 
                 <ul>
                     <li><code>get(handler)</code> — GET requests</li>
@@ -421,7 +771,7 @@ cargo add xeo</pre>
             </section>
 
             <!-- Extractors -->
-            <section id="components" class="section">
+            <section id="extractors" class="section">
                 <h2 class="section-title">Extractors</h2>
                 <p>Extractors parse incoming requests into strongly-typed Rust values. They work as handler function arguments.</p>
 
@@ -434,25 +784,44 @@ cargo add xeo</pre>
                         </div>
                         <span class="code-filename">src/handlers.rs</span>
                     </div>
-                    <div class="code-content">
-<pre><span class="keyword">use</span> xeo::prelude::*;
+                    <div class="code-body">
+<pre><span class="kw">use</span> xeo::prelude::*;
 
-<span class="variable">#[derive(Deserialize)]</span>
-<span class="keyword">struct</span> <span class="function">QueryParams</span> {
+<span class="mac">#[derive(Deserialize)]</span>
+<span class="kw">struct</span> <span class="fn">QueryParams</span> {
     page: Option&lt;u32&gt;,
     limit: Option&lt;u32&gt;,
 }
 
-<span class="keyword">async fn</span> <span class="function">list_items</span>(
+<span class="kw">async fn</span> <span class="fn">list_items</span>(
     Query(params): Query&lt;QueryParams&gt;,
     State(db): State&lt;Database&gt;,
 ) -&gt; Json&lt;Vec&lt;Item&gt;&gt; {
-    <span class="keyword">let</span> items = db.fetch_items(
-        params.page.unwrap_or(<span class="string">1</span>),
-        params.limit.unwrap_or(<span class="string">20</span>),
-    ).<span class="keyword">await</span>;
+    <span class="kw">let</span> items = db.fetch_items(
+        params.page.unwrap_or(<span class="num">1</span>),
+        params.limit.unwrap_or(<span class="num">20</span>),
+    ).<span class="kw">await</span>;
     Json(items)
 }</pre>
+                    </div>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Path</h4>
+                        <p>Extract route parameters like <code>/users/:id</code> into typed values.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Query</h4>
+                        <p>Parse query strings into structs with automatic validation.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Json</h4>
+                        <p>Deserialize JSON bodies with serde. Automatic error handling.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>State</h4>
+                        <p>Access shared application state in any handler.</p>
                     </div>
                 </div>
             </section>
@@ -471,28 +840,38 @@ cargo add xeo</pre>
                         </div>
                         <span class="code-filename">src/main.rs</span>
                     </div>
-                    <div class="code-content">
-<pre><span class="keyword">use</span> xeo::prelude::*;
-<span class="keyword">use</span> std::sync::Arc;
+                    <div class="code-body">
+<pre><span class="kw">use</span> xeo::prelude::*;
+<span class="kw">use</span> std::sync::Arc;
 
-<span class="keyword">struct</span> <span class="function">AppState</span> {
+<span class="kw">struct</span> <span class="fn">AppState</span> {
     db: Database,
     cache: Cache,
 }
 
-<span class="variable">#[xeo::main]</span>
-<span class="keyword">async fn</span> <span class="function">main</span>() {
-    <span class="keyword">let</span> state = Arc::new(AppState {
-        db: Database::connect(<span class="string">"postgres://..."</span>).<span class="keyword">await</span>,
+<span class="mac">#[xeo::main]</span>
+<span class="kw">async fn</span> <span class="fn">main</span>() {
+    <span class="kw">let</span> state = Arc::new(AppState {
+        db: Database::connect(<span class="str">"postgres://..."</span>).<span class="kw">await</span>,
         cache: Cache::new(),
     });
 
     Xeo::new()
         .state(state)
-        .route(<span class="string">"/"</span>, get(handler))
-        .bind(<span class="string">"0.0.0.0:8080"</span>).<span class="keyword">await</span>
-        .run().<span class="keyword">await</span>;
+        .route(<span class="str">"/"</span>, get(handler))
+        .bind(<span class="str">"0.0.0.0:8080"</span>).<span class="kw">await</span>
+        .run().<span class="kw">await</span>;
 }</pre>
+                    </div>
+                </div>
+
+                <div class="callout tip">
+                    <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                    <div class="callout-content">
+                        <div class="callout-title">Pro Tip</div>
+                        <p>Wrap your state in <code>Arc</code> for shared ownership across async tasks without cloning.</p>
                     </div>
                 </div>
             </section>
@@ -500,7 +879,7 @@ cargo add xeo</pre>
             <!-- Deployment -->
             <section id="deployment" class="section">
                 <h2 class="section-title">Deployment</h2>
-                <p>Xeo compiles to a single static binary. Deploy anywhere that runs executables — no runtime required.</p>
+                <p>Xeo compiles to a single static binary. Deploy anywhere that runs executables — no runtime, no dependencies.</p>
 
                 <div class="code-block">
                     <div class="code-header">
@@ -511,45 +890,73 @@ cargo add xeo</pre>
                         </div>
                         <span class="code-filename">terminal</span>
                     </div>
-                    <div class="code-content">
-<pre><span class="comment"># Build optimized release binary</span>
+                    <div class="code-body">
+<pre><span class="cm"># Build optimized release binary</span>
 cargo build --release
 
-<span class="comment"># Binary is at target/release/my-server</span>
-<span class="comment"># Copy and run anywhere</span>
+<span class="cm"># Binary is at target/release/my-server</span>
+<span class="cm"># Copy and run anywhere</span>
 ./target/release/my-server
 
-<span class="comment"># Or build for specific target</span>
+<span class="cm"># Or build for specific target</span>
 cargo build --release --target x86_64-unknown-linux-musl</pre>
                     </div>
                 </div>
 
-                <p>Release binaries are typically 2-4MB and start in under 10ms. Perfect for containers and serverless.</p>
+                <p>Release binaries are typically 2-4MB and start in under 10ms. Perfect for containers, serverless, and edge deployments.</p>
 
-                <div class="callout">
-                    <div class="callout-title">Tip</div>
-                    <p>Use <code>cargo build --release</code> for production. Debug builds are significantly slower.</p>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Docker Ready</h4>
+                        <p>Multi-stage builds produce minimal images under 10MB.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Cross Compile</h4>
+                        <p>Build for any target from your development machine.</p>
+                    </div>
+                </div>
+
+                <div class="callout tip">
+                    <svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                    <div class="callout-content">
+                        <div class="callout-title">Performance Tip</div>
+                        <p>Always use <code>cargo build --release</code> for production. Debug builds are 10-100x slower.</p>
+                    </div>
                 </div>
             </section>
         </main>
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-left">
+            &copy; 2026 Xeo. MIT Licensed.
+        </div>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="https://github.com" target="_blank">GitHub</a>
+            <a href="https://discord.com" target="_blank">Discord</a>
+        </div>
+    </footer>
+
     <script>
-        // Simple active link highlighting based on scroll
+        // Active link highlighting based on scroll
         const sections = document.querySelectorAll('.section');
-        const navLinks = document.querySelectorAll('.nav-link');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
 
         function updateActiveLink() {
-            let current = '';
+            let current = 'installation';
             
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                if (window.scrollY >= sectionTop - 100) {
+                if (window.scrollY >= sectionTop - 120) {
                     current = section.getAttribute('id');
                 }
             });
 
-            navLinks.forEach(link => {
+            sidebarLinks.forEach(link => {
                 link.classList.remove('active');
                 if (link.getAttribute('href') === '#' + current) {
                     link.classList.add('active');
