@@ -8,5 +8,5 @@ fn main() {
     let mut app = Xeo::new(port, "0.0.0.0".to_string());
     app.route("/".to_string(), "index.html".to_string());
     app.route("/docs".to_string(), "docs.html".to_string());
-    app.server("".to_string());
+    app.server("index.html".to_string());
 }
